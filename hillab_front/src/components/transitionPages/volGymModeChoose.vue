@@ -3,7 +3,7 @@
     <div class="end_button_container" @click="$router.push('/level')">
       <i class="fas fa-times"></i>
     </div>
-    <div class="guide">第{{1}}关（{{43}}个）</div>
+    <div class="guide">第{{1}}关（{{ $store.state.volcabularyDB.length }}个）</div>
 
     <el-row style="margin-top: 80px;">
       <el-col :span="8" :offset="4">

@@ -1,12 +1,14 @@
 <template>
   <div class="correctShow_container">
     <i class="fas fa-check-circle"></i>
-    &nbsp;{{ $store.state.volcabularyDB[$store.state.currentWordNum].word }}
+    &nbsp;{{ word_shuffled_list[0].word }}
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["word_shuffled_list"]
+};
 </script>
 
 <style scoped>

@@ -11,18 +11,10 @@
             <component v-bind:is="view" v-on:side="side"></component>
           </transition>
           <div>
-            <div
-              class="wordSwitch_button_container"
-              @click="lastWord()"
-              style="left: 310px"
-            >
+            <div class="wordSwitch_button_container" @click="lastWord()" style="left: 310px">
               <i class="fas fa-chevron-left" style="padding-left: 8px;"></i>
             </div>
-            <div
-              class="wordSwitch_button_container"
-              @click="nextWord()"
-              style="right: 310px"
-            >
+            <div class="wordSwitch_button_container" @click="nextWord()" style="right: 310px">
               <i class="fas fa-chevron-right" style="padding-left: 10px;"></i>
             </div>
           </div>
@@ -49,7 +41,6 @@
 <script>
 import frontSide from "@/components/volGym/volGymComponents/word";
 import backSide from "@/components/volGym/volGymComponents/explaination";
-import functionList from "../../assets/utility";
 
 export default {
   name: "volGym_learnFirstly",
@@ -80,22 +71,6 @@ export default {
   },
 
   mounted() {
-    console.log("I am in study mode");
-    localStorage.setItem("curLevel", 0);
-    console.log("this is my token here", localStorage.getItem("token"));
-    functionList.fetchToBackEndAxios(
-      "GET",
-      "vols/getAllVols",
-      result => {
-        console.log(result);
-        // 修改成 testword 方便查看
-        result.vols[0].word = "testword"
-        this.$store.state.volcabularyDB = result.vols
-      },
-      nr => {},
-      { level: localStorage.getItem("curLevel") },
-      localStorage.getItem("token")
-    );
     this.$store.state.currentWordNum = 0;
   },
 

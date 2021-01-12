@@ -12,22 +12,20 @@
                       <div class="syntacticCategory_container">
                         <div
                           class="adj_container"
-                          v-if="standby_list[$store.state.currentWordNum].syntacticCategory == 'adj'"
+                          v-if="word_shuffled_list[0].syntacticCategory == 'adj'"
                         >形容词</div>
                         <div
                           class="n_container"
-                          v-if="standby_list[$store.state.currentWordNum].syntacticCategory == 'n'"
+                          v-if="word_shuffled_list[0].syntacticCategory == 'n'"
                         >名词</div>
                         <div
                           class="v_container"
-                          v-if="standby_list[$store.state.currentWordNum].syntacticCategory == 'v'"
+                          v-if="word_shuffled_list[0].syntacticCategory == 'v'"
                         >动词</div>
                       </div>
                     </el-col>
                     <el-col :span="20" style="padding-left: 10px">
-                      <div
-                        class="chinese_container"
-                      >{{ standby_list[$store.state.currentWordNum].chinese }}</div>
+                      <div class="chinese_container">{{ word_shuffled_list[0].chinese }}</div>
                     </el-col>
                   </el-row>
                   <div
@@ -43,6 +41,7 @@
                       v-bind:is="view"
                       v-on:childUserAnswer="childUserAnswer"
                       :userAnswer="userAnswer"
+                      :word_shuffled_list="word_shuffled_list"
                     ></component>
                   </transition>
                   <transition
@@ -61,7 +60,7 @@
                           <div class="correctAnswer_text_container">Correct Answer</div>
                           <div class="correctShow_container">
                             <i class="fas fa-check-circle"></i>
-                            &nbsp;{{ standby_list[$store.state.currentWordNum].word }}
+                            &nbsp;{{ word_shuffled_list[0].word }}
                           </div>
                         </el-col>
                       </el-row>
@@ -99,19 +98,19 @@
             <el-col :span="2" :offset="1">
               <div class="status_container">
                 <i class="el-icon-loading"></i>
-                &nbsp;待记忆：{{ standby_list.length }}
+                &nbsp;待记忆：{{ tag_1.length }}
               </div>
             </el-col>
             <el-col :span="3" style="padding-left: 20px">
               <div class="status_container">
                 <i class="far fa-circle"></i>
-                &nbsp;初步记忆：{{ firstMemorized_list.length }}
+                &nbsp;初步记忆：{{ tag_2.length }}
               </div>
             </el-col>
             <el-col :span="3">
               <div class="status_container">
                 <i class="fas fa-check-circle"></i>
-                &nbsp;进阶记忆：{{ advancedMemorized_list.length }}
+                &nbsp;进阶记忆：{{ tag_3.length }}
               </div>
             </el-col>
             <el-col :span="2" :offset="11">
@@ -161,9 +160,11 @@ export default {
       userAnswer: "",
       nextButtonName: "下一题",
       progressBar_percentage: 0,
-      standby_list: [],
-      firstMemorized_list: [],
-      advancedMemorized_list: [],
+
+      word_shuffled_list: [],
+      tag_1: [],
+      tag_2: [],
+      tag_3: [],
 
       userInput_show: true,
       correct_show: false,
@@ -174,24 +175,19 @@ export default {
   },
 
   created() {
-    this.$store.state.volDB_userRecord = this.$store.state.volcabularyDB;
-    var m = this.$store.state.volcabularyDB.length,
+    this.word_shuffled_list = this.$store.state.volcabularyDB.concat();
+    var m = this.word_shuffled_list.length,
       t,
       i;
 
     while (m) {
       i = Math.floor(Math.random() * m--);
-      t = this.$store.state.volDB_userRecord[m];
-      this.$store.state.volDB_userRecord[
-        m
-      ] = this.$store.state.volDB_userRecord[i];
-      this.$store.state.volDB_userRecord[i] = t;
+      t = this.word_shuffled_list[m];
+      this.word_shuffled_list[m] = this.word_shuffled_list[i];
+      this.word_shuffled_list[i] = t;
     }
-    this.standby_list = this.$store.state.volDB_userRecord;
-  },
 
-  mounted() {
-    this.$store.state.currentWordNum = 0;
+    this.tag_1 = this.word_shuffled_list.concat();
   },
 
   methods: {
@@ -199,93 +195,84 @@ export default {
       this.userAnswer = userAnswer;
     },
     check() {
-      var currentWord = this.$store.state.volDB_userRecord[
-        this.$store.state.currentWordNum
-      ];
+      var currentWord = this.word_shuffled_list[0];
       if (this.userAnswer == currentWord.word) {
-        // if (currentWord.incorrectCount == 0) {
-        //   currentWord.correctCount++;
-        //   this.standby_list.splice(this.$store.state.currentWordNum, 1);
-        // } else if (currentWord.unfamiliarCount <= 1) {
-        //   this.advancedMemorized_list.push(currentWord);
-        //   this.standby_list.splice(this.$store.state.currentWordNum, 1);
-        // } else if (currentWord.incorrectCount > 0) {
-        //   currentWord.correctCount++;
-        //   if (this.standby_list.indexOf(currentWord) > -1) {
-        //     this.firstMemorized_list.push(currentWord);
-        //     this.standby_list.splice(this.$store.state.currentWordNum, 1);
-        //     this.standby_list.push(currentWord);
-        //   } else if (
-        //     this.firstMemorized_list.indexOf(currentWord) > -1 &&
-        //     currentWord.correctCount > currentWord.incorrectCount
-        //   ) {
-        //     this.advancedMemorized_list.push(currentWord);
-        //   }
-        // }
         this.animateName = "animated flipInX";
         this.view = "v-correctShow";
-        this.progressBar_percentage =
-          ((this.$store.state.currentWordNum + 1) /
-            this.$store.state.volDB_userRecord.length) *
-          100;
+        this.word_shuffled_list[0].correctCount++;
+        if (
+          this.word_shuffled_list[0].incorrectCount == 0 &&
+          this.word_shuffled_list[0].unfamiliarCount <= 1
+        ) {
+          this.tag_3.push(this.tag_1[0]);
+          this.tag_1.splice(this.tag_1.indexOf(this.word_shuffled_list[0]), 1);
+          this.progressBar_percentage =
+            (this.tag_3.length / this.$store.state.volcabularyDB.length) * 100;
+        } else if (this.tag_1.indexOf(this.word_shuffled_list[0]) > -1) {
+          this.tag_1.splice(this.tag_1.indexOf(this.word_shuffled_list[0]), 1);
+          this.tag_2.push(this.word_shuffled_list[0]);
+        } else if (this.tag_2.indexOf(this.word_shuffled_list[0]) > -1) {
+          if (
+            this.word_shuffled_list[0].correctCount >
+            this.word_shuffled_list[0].incorrectCount
+          ) {
+            this.tag_3.push(this.tag_1[0]);
+            this.tag_2.splice(
+              this.tag_2.indexOf(this.word_shuffled_list[0]),
+              1
+            );
+            this.progressBar_percentage =
+              (this.tag_3.length / this.$store.state.volcabularyDB.length) *
+              100;
+          }
+        }
       } else {
-        // this.standby_list.splice(this.$store.state.currentWordNum, 1);
-        // this.standby_list.push(currentWord);
+        this.word_shuffled_list[0].incorrectCount++;
         this.animateName = "animated headShake";
         this.nextButtonName = "✔ OK";
         this.view = "v-wrongShow";
       }
     },
     skip() {
+      this.word_shuffled_list[0].incorrectCount++;
       this.animateName = "animated headShake";
       this.nextButtonName = "✔ OK";
       this.view = "v-wrongShow";
     },
     next() {
-      var currentWord = this.$store.state.volDB_userRecord[
-        this.$store.state.currentWordNum
-      ];
-      if (this.$store.state.currentWordNum == this.standby_list.length - 1) {
-        this.$message({
-          message: "这是最后一题了哦！",
-          type: "warning"
-        });
+      if (
+        this.word_shuffled_list.length == 1 &&
+        this.tag_1.length == 0 &&
+        this.tag_2.length == 0 &&
+        this.tag_3.length == this.$store.state.volcabularyDB.length
+      ) {
+        this.$router.push("/level");
       } else {
-        if (this.userAnswer == currentWord.word) {
+        if (this.userAnswer == this.word_shuffled_list[0].word) {
           if (
-            currentWord.incorrectCount == 0 &&
-            currentWord.unfamiliarCount <= 1
+            this.word_shuffled_list[0].incorrectCount == 0 &&
+            this.word_shuffled_list[0].unfamiliarCount <= 1
           ) {
-            currentWord.correctCount++;
-            this.advancedMemorized_list.push(currentWord);
-            this.standby_list.splice(this.$store.state.currentWordNum, 1);
-          }
-          // else if (currentWord.unfamiliarCount <= 1) {
-          //   this.advancedMemorized_list.push(currentWord);
-          //   this.standby_list.splice(this.$store.state.currentWordNum, 1);
-          // }
-          else if (currentWord.incorrectCount > 0) {
-            currentWord.correctCount++;
-            if (this.standby_list.indexOf(currentWord) > -1) {
-              this.firstMemorized_list.push(currentWord);
-              this.standby_list.splice(this.$store.state.currentWordNum, 1);
-              this.standby_list.push(currentWord);
-            } else if (
-              this.firstMemorized_list.indexOf(currentWord) > -1 &&
-              currentWord.correctCount > currentWord.incorrectCount
-            ) {
-              this.advancedMemorized_list.push(currentWord);
-            }
+            this.word_shuffled_list.splice(0, 1);
+          } else if (this.tag_1.indexOf(this.word_shuffled_list[0]) > -1) {
+            this.word_shuffled_list.push(this.word_shuffled_list[0]);
+            this.word_shuffled_list.splice(0, 1);
+          } else if (this.tag_2.indexOf(this.word_shuffled_list[0]) > -1) {
+            this.word_shuffled_list.push(this.word_shuffled_list[0]);
+            this.word_shuffled_list.splice(0, 1);
           }
         } else {
-          this.standby_list.splice(this.$store.state.currentWordNum, 1);
-          this.standby_list.push(currentWord);
+          this.word_shuffled_list.push(this.word_shuffled_list[0]);
+          this.word_shuffled_list.splice(0, 1);
         }
-        // this.$store.state.currentWordNum++;
+
         this.animateName = "animated flipInX";
         this.view = "v-userInputShow";
         this.userAnswer = "";
       }
+      this.animateName = "animated flipInX";
+      this.view = "v-userInputShow";
+      this.userAnswer = "";
     },
     quit() {
       this.$router.push("/volGymModeChoose");
