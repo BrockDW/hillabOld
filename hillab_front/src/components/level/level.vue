@@ -36,7 +36,7 @@
                       ></el-progress>
                       <span class="study_times">{{ item.proficiency }}</span>
                     </span>
-                    <span class="units_title" @click="toContent(item.unit)">
+                    <span class="units_title" @click="toContent(item.path)">
                       <span :class="{done: item.percentage==100}">{{ item.unit }}</span>
                     </span>
                   </div>
@@ -72,7 +72,7 @@
                     ></el-progress>
                     <span class="study_times">{{ item.proficiency }}</span>
                   </span>
-                  <span class="units_title">
+                  <span class="units_title" @click="toContent(item.path)">
                     <span :class="{done: item.percentage==100}">{{ item.unit }}</span>
                   </span>
                 </el-col>
@@ -98,7 +98,7 @@
                     ></el-progress>
                     <span class="study_times">{{ item.proficiency }}</span>
                   </span>
-                  <span class="units_title">
+                  <span class="units_title" @click="toContent(item.path)">
                     <span :class="{done: item.percentage==100}">{{ item.unit }}</span>
                   </span>
                 </el-col>
@@ -124,7 +124,7 @@
               </el-col>
               <el-col :span="12">
                 <div class="unlock_text">本单元内容还未解锁哦</div>
-                <div class="unlock_button_container">测试解锁</div>
+                <div class="unlock_button_container" @click="$router.push('/levelup')">测试解锁</div>
               </el-col>
             </el-row>
           </div>
@@ -196,8 +196,9 @@ export default {
         }
       }
     },
-    toContent(unit) {
-      this.$router.push("/contents");
+    toContent(path) {
+      console.log(path);
+      this.$router.push(path);
       // this.$router.push("/consolidate")
     }
   }
@@ -302,9 +303,6 @@ export default {
   border-radius: 50%;
   opacity: 1;
   z-index: 999;
-}
-
-.levelSwitch_button_container {
   font-size: 18px;
   color: #fff;
   padding-top: 2px;
