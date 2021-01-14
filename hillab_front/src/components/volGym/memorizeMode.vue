@@ -175,6 +175,25 @@ export default {
   },
 
   created() {
+    var aData = new Date();
+    let hour = aData.getHours();
+    hour = hour < 10 ? "0" + hour : hour;
+    let minute = aData.getMinutes();
+    minute = minute < 10 ? "0" + minute : minute;
+    let second = aData.getSeconds();
+    second = second < 10 ? "0" + second : second;
+    aData =
+      aData.getFullYear() +
+      "-" +
+      (aData.getMonth() + 1) +
+      "-" +
+      aData.getDate() +
+      " " +
+      hour +
+      ":" +
+      minute +
+      ":" +
+      second;
     this.word_shuffled_list = this.$store.state.volcabularyDB.concat();
     var m = this.word_shuffled_list.length,
       t,
@@ -188,6 +207,8 @@ export default {
     }
 
     this.tag_1 = this.word_shuffled_list.concat();
+
+    window.addEventListener("keydown", this.handleKeyDown, true);
   },
 
   methods: {
@@ -196,6 +217,25 @@ export default {
     },
     check() {
       var currentWord = this.word_shuffled_list[0];
+      var aData = new Date();
+      let hour = aData.getHours();
+      hour = hour < 10 ? "0" + hour : hour;
+      let minute = aData.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      let second = aData.getSeconds();
+      second = second < 10 ? "0" + second : second;
+      aData =
+        aData.getFullYear() +
+        "-" +
+        (aData.getMonth() + 1) +
+        "-" +
+        aData.getDate() +
+        " " +
+        hour +
+        ":" +
+        minute +
+        ":" +
+        second;
       if (this.userAnswer == currentWord.word) {
         this.animateName = "animated flipInX";
         this.view = "v-correctShow";
@@ -204,6 +244,7 @@ export default {
           this.word_shuffled_list[0].incorrectCount == 0 &&
           this.word_shuffled_list[0].unfamiliarCount <= 1
         ) {
+          this.word_shuffled_list[0].lastMemorized = aData;
           this.tag_3.push(this.tag_1[0]);
           this.tag_1.splice(this.tag_1.indexOf(this.word_shuffled_list[0]), 1);
           this.progressBar_percentage =
@@ -216,11 +257,12 @@ export default {
             this.word_shuffled_list[0].correctCount >
             this.word_shuffled_list[0].incorrectCount
           ) {
-            this.tag_3.push(this.tag_1[0]);
+            this.word_shuffled_list[0].lastMemorized = aData;
             this.tag_2.splice(
               this.tag_2.indexOf(this.word_shuffled_list[0]),
               1
             );
+            this.tag_3.push(this.word_shuffled_list[0]);
             this.progressBar_percentage =
               (this.tag_3.length / this.$store.state.volcabularyDB.length) *
               100;
@@ -240,6 +282,8 @@ export default {
       this.view = "v-wrongShow";
     },
     next() {
+      console.log(this.tag_2);
+      console.log(this.word_shuffled_list.concat());
       if (
         this.word_shuffled_list.length == 1 &&
         this.tag_1.length == 0 &&
@@ -254,12 +298,17 @@ export default {
             this.word_shuffled_list[0].unfamiliarCount <= 1
           ) {
             this.word_shuffled_list.splice(0, 1);
-          } else if (this.tag_1.indexOf(this.word_shuffled_list[0]) > -1) {
-            this.word_shuffled_list.push(this.word_shuffled_list[0]);
-            this.word_shuffled_list.splice(0, 1);
-          } else if (this.tag_2.indexOf(this.word_shuffled_list[0]) > -1) {
-            this.word_shuffled_list.push(this.word_shuffled_list[0]);
-            this.word_shuffled_list.splice(0, 1);
+          } else {
+            if (
+              this.word_shuffled_list[0].correctCount >
+              this.word_shuffled_list[0].incorrectCount
+            ) {
+              console.log("flag1");
+              this.word_shuffled_list.splice(0, 1);
+            } else {
+              this.word_shuffled_list.push(this.word_shuffled_list[0]);
+              this.word_shuffled_list.splice(0, 1);
+            }
           }
         } else {
           this.word_shuffled_list.push(this.word_shuffled_list[0]);
@@ -276,6 +325,21 @@ export default {
     },
     quit() {
       this.$router.push("/volGymModeChoose");
+    },
+    handleKeyDown(e) {
+      let key = null;
+      if (window.event === undefined) {
+        key = e.keyCode;
+      } else {
+        key = window.event.keyCode;
+      }
+      if (key === 13) {
+        if (this.view == "v-userInputShow") {
+          this.check();
+        } else if (this.view == "v-correctShow" || this.view == "v-wrongShow") {
+          this.next();
+        }
+      }
     }
   }
 };

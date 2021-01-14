@@ -1,11 +1,25 @@
 <template>
   <div class="input_container">
-    <el-input type="text" v-model="childUserAnswer" autocomplete="off"></el-input>
+    <el-input
+      type="text"
+      v-select="true"
+      v-model="childUserAnswer"
+      autocomplete="off"
+      checked="checked"
+    ></el-input>
   </div>
 </template>
 
 <script>
 export default {
+  directives: {
+    select: {
+      inserted: function(el, binding) {
+        el.querySelector("input").select();
+      }
+    }
+  },
+
   data() {
     return {
       childUserAnswer: ""
