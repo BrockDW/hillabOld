@@ -64,6 +64,7 @@ export default {
         "users/login",
         result => {
           console.log(result);
+          localStorage.setItem("token", result.token);
           Message.success({
             message: result.message
           });

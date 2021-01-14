@@ -27,8 +27,30 @@
 </template>
 
 <script>
+import functionList from '../../assets/utility';
 export default {
   name: "volGym_start",
+
+  mounted() {
+    console.log("I am in study mode");
+    localStorage.setItem("curLevel", 0);
+    console.log("this is my token here", localStorage.getItem("token"));
+    // functionList
+    functionList.fetchToBackEndAxios(
+      "GET",
+      "vols/getAllVols",
+      result => {
+        console.log(result);
+        // 修改成 testword 方便查看
+        result.vols[0].word = "testword"
+        this.$store.state.volcabularyDB = result.vols
+      },
+      nr => {},
+      { level: localStorage.getItem("curLevel") },
+      localStorage.getItem("token")
+    );
+    this.$store.state.currentWordNum = 0;
+  },
 
   methods: {
     toStudyMode() {

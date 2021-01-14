@@ -1,118 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+// import fs from "fs"
 // import Cookies from 'js-cookie';
 // import SecureLS from "secure-ls";
 // const ls = new SecureLS({ isCompression: false });
 import VuexPersistence from "vuex-persist";
 
 Vue.use(Vuex);
-
-function initialState() {
-  return {
-    ////////////////////////////////
-    // Test Data. For Development //
-    ////////////////////////////////
-
-    // Header Information Data
-    starCount: 125,
-    studyTimeCount: 15,
-    avatar: require("@/assets/avatars/default_avatar.svg"),
-    token: "",
-
-    //////////////////
-    // Profile Data //
-    //////////////////
-
-    // LEARNING PROGRESS PAGE TABLE DATA
-    tableData: [
-      {
-        type: "学习",
-        unit: "第0关",
-        course: "主语",
-        time: "2020-09-12 12:38"
-      },
-      {
-        type: "练习",
-        unit: "第0关",
-        course: "主语",
-        time: "2020-09-11 12:38"
-      },
-      {
-        type: "学习",
-        unit: "第0关",
-        course: "主语",
-        time: "2020-09-10 12:38"
-      },
-      {
-        type: "学习",
-        unit: "第1关",
-        course: "there be 句型",
-        time: "2020-09-12 12:38"
-      },
-      {
-        type: "通关",
-        unit: "第0关",
-        course: "",
-        time: "2020-09-12 12:38"
-      },
-      {
-        type: "学习",
-        unit: "第1关",
-        course: "宾格人称代词",
-        time: "2020-09-12 12:38"
-      },
-      {
-        type: "学习",
-        unit: "第1关",
-        course: "宾格人称代词",
-        time: "2020-09-12 12:38"
-      },
-      {
-        type: "学习",
-        unit: "第1关",
-        course: "宾格人称代词",
-        time: "2020-09-12 12:38"
-      },
-      {
-        type: "学习",
-        unit: "第1关",
-        course: "宾格人称代词",
-        time: "2020-09-12 12:38"
-      }
-    ],
-
-    // LEARNING STATISTICS PAGE DATA
-    learnStatistics: {
-      studyTimeCount: 367,
-      practiceTimeCount: 495,
-      knowledgePointsCount: 15,
-      pointMasteredCount: 7,
-      levelStartedCount: 3,
-      levelFinishedCount: 1
-    },
-
-    // PERSONAL INFORMATION PAGE DATA
-    username: "scholar_hills",
-    nickname: "Lluvia",
-    topicsConcerned: [
-      {
-        tagName: "IGCSE",
-        tagType: "danger"
-      },
-      {
-        tagName: "ESL",
-        tagType: "success"
-      },
-      {
-        tagName: "英国大学",
-        tagType: "info"
-      }
-    ]
-    /* .. initial state ... */
-  };
-}
-
 
 const store = new Vuex.Store({
   state: {
@@ -328,7 +223,7 @@ const store = new Vuex.Store({
             percentage: 100,
             proficiency: 3,
             path: "/content"
-          },
+          }
         ],
         sentence_structure: [
           {
@@ -380,38 +275,38 @@ const store = new Vuex.Store({
     currentWordNum: 0,
     volDB_userRecord: [],
     volcabularyDB: [
-      {
-        difficulty: 0,
-        word: "nice",
-        syntacticCategory: "adj",
-        chinese: "友好的，可爱的，让人愉快的",
-        englishExplanation: "",
-        sampleSentence: "She is really nice.",
-        sentenceTranslation: "她非常友好。",
-        incorrectCount: 0,
-        correctCount: 0,
-        unfamiliarCount: 0,
-        familiarCount: 0,
-        lastStudied: "2020-7-30 12:30:07",
-        lastMemorized: "2020-7-30 12:30:07",
-        audioName: null,
-      },
-      {
-        difficulty: 0,
-        word: "verso",
-        syntacticCategory: "n",
-        chinese: "反面；书的左页；[印刷] 封底",
-        englishExplanation: "",
-        sampleSentence: "Please note that the verso of the card has to be white.",
-        sentenceTranslation: "请注意卡的背面必须是白色的。",
-        incorrectCount: 0,
-        correctCount: 0,
-        unfamiliarCount: 0,
-        familiarCount: 0,
-        lastStudied: "2020-7-30 12:30:07",
-        lastMemorized: "2020-7-30 12:30:07",
-        audioName: null,
-      },
+      // {
+      //   difficulty: 0,
+      //   word: "nice",
+      //   syntacticCategory: "adj",
+      //   chinese: "友好的，可爱的，让人愉快的",
+      //   englishExplanation: "",
+      //   sampleSentence: "She is really nice.",
+      //   sentenceTranslation: "她非常友好。",
+      //   incorrectCount: 0,
+      //   correctCount: 0,
+      //   unfamiliarCount: 0,
+      //   familiarCount: 0,
+      //   lastStudied: "2020-7-30 12:30:07",
+      //   lastMemorized: "2020-7-30 12:30:07",
+      //   audioName: null,
+      // },
+      // {
+      //   difficulty: 0,
+      //   word: "verso",
+      //   syntacticCategory: "n",
+      //   chinese: "反面；书的左页；[印刷] 封底",
+      //   englishExplanation: "",
+      //   sampleSentence: "Please note that the verso of the card has to be white.",
+      //   sentenceTranslation: "请注意卡的背面必须是白色的。",
+      //   incorrectCount: 0,
+      //   correctCount: 0,
+      //   unfamiliarCount: 0,
+      //   familiarCount: 0,
+      //   lastStudied: "2020-7-30 12:30:07",
+      //   lastMemorized: "2020-7-30 12:30:07",
+      //   audioName: null,
+      // },
       // {
       //   difficulty: 0,
       //   word: "abjure",
